@@ -2,6 +2,8 @@ Content:
 
 corrections.pdf - reporting identified errors
 
+multicomp_RECOMB20_slides.pdf - RECOMB 2020 slides
+
 multidecoy_RECOMB_supp.pdf - Supplementary to the paper "Multiple Competition-Based FDR Control and Its Application to Peptide Detection" by Kristen Emery, Syamand Hasam, William Stafford Noble, and Uri Keich.  Published in RECOMB 2020.
 
 multicomp_0.2.0.tar.gz - the multicomp R package that implements some of the methods discussed in the paper
