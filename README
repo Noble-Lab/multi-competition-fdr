@@ -2,13 +2,13 @@ Content:
 
 corrections.pdf - reporting identified errors
 
-multidecoy_peptides.R - an R script that automates the pipeline of peptide detection using multiple decoys (details to appear in ...)
+multicomp_0.2.0.tar.gz - the multicomp R package that implements some of the methods discussed in the paper
 
 multicomp_RECOMB20_slides.pdf - RECOMB 2020 slides
 
 multidecoy_RECOMB_supp.pdf - Supplementary to the paper "Multiple Competition-Based FDR Control and Its Application to Peptide Detection" by Kristen Emery, Syamand Hasam, William Stafford Noble, and Uri Keich.  Published in RECOMB 2020.
 
-multicomp_0.2.0.tar.gz - the multicomp R package that implements some of the methods discussed in the paper
+multidecoy_peptides.R - an R script that automates the pipeline of peptide detection using multiple decoys (details to appear in ...)
 
 post RECOMB2020 talk.MP4 - a recording of a "clone" of the RECOMB talk
 
