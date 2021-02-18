@@ -1,7 +1,9 @@
+# NOTE: The usage and distribution of this software is governed by the Apache License Version 2.0  (https://www.apache.org/licenses/LICENSE-2.0)
+
 library(multicomp)
 
 parameter_file = commandArgs(trailingOnly = T)
-arg_table = read.table(parameter_file, sep = "=")
+arg_table = read.table(parameter_file, sep = "=", stringsAsFactors = F)
 
 fasta = arg_table[arg_table$V1 == "fasta_file",]$V2
 ms2 = arg_table[arg_table$V1 == "spectra_file",]$V2
@@ -20,18 +22,11 @@ if("name" %in% arg_table$V1)
    dataSet = "dataSet"
 }
 
-if("mz_bin_width" %in% arg_table$V1)
+if("extra_tide_search_parameters" %in% arg_table$V1)
 {
-   mz_bin_width = arg_table[arg_table$V1 == "mz_bin_width",]$V2
+  extra_crux = arg_table[arg_table$V1 == "extra_tide_search_parameters",]$V2
 }else{
-   mz_bin_width = 0.02
-}
-
-if("precursor" %in% arg_table$V1)
-{
-   precursor = arg_table[arg_table$V1 == "precursor",]$V2
-}else{
-   precursor = 50
+  extra_crux = ""
 }
 
 if("keep_psms" %in% arg_table$V1)
@@ -64,7 +59,7 @@ for(decoy in 0:(n_decoys - 1))
     root = paste(dataSet, ".", scoring, sep = "")
     if(scoring == "xcorr")
     {
-      params = paste("--auto-mz-bin-width warn --mz-bin-width ", mz_bin_width, sep = "") 
+      params = "" 
     }
     else
     {
@@ -73,7 +68,7 @@ for(decoy in 0:(n_decoys - 1))
     tideResults = paste(root, "/dcy", decoy, ".tide-search.decoy.txt", sep = "")
     if(!file.exists(tideResults))
     {
-      system(paste(CRUX, " tide-search --output-dir ", root, " --fileroot dcy", decoy, " --overwrite T --concat F --top-match 1 --precursor-window " , precursor, " --precursor-window-type ppm --auto-precursor-window warn ", params, " ", ms2, " ", index, sep = ""))
+      system(paste(CRUX, " tide-search --output-dir ", root, " --fileroot dcy", decoy, " --overwrite T --concat F --top-match 1 --auto-precursor-window warn --auto-mz-bin-width warn ", extra_crux, " ", params, " ", ms2, " ", index, sep = ""))
     }
     
     if(decoy == 0)
@@ -172,19 +167,19 @@ read_all = function(min, max, data_name, use_xcorr)
   if(use_xcorr)
   {
     df.list = list()
-    df.list[[1]] = read.csv(paste("./", data_name, ".xcorr/dcy0.tide-search.target.txt", sep = ""), sep = "\t")
+    df.list[[1]] = read.csv(paste("./", data_name, ".xcorr/dcy0.tide-search.target.txt", sep = ""), sep = "\t", stringsAsFactors = F)
     for(i in min:max)
     {
-      df.list[[i+2]] = read.csv(paste("./", data_name, ".xcorr/dcy", toString(i),".tide-search.decoy.txt", sep = ""), sep = "\t")
+      df.list[[i+2]] = read.csv(paste("./", data_name, ".xcorr/dcy", toString(i),".tide-search.decoy.txt", sep = ""), sep = "\t", stringsAsFactors = F)
     }
     return(df.list) 
   }
   else{
     df.list = list()
-    df.list[[1]] = read.csv(paste("./", data_name, ".pvalue/dcy0.tide-search.target.txt", sep = ""), sep = "\t")
+    df.list[[1]] = read.csv(paste("./", data_name, ".pvalue/dcy0.tide-search.target.txt", sep = ""), sep = "\t", stringsAsFactors = F)
     for(i in min:max)
     {
-      df.list[[i+2]] = read.csv(paste("./", data_name, ".pvalue/dcy", toString(i),".tide-search.decoy.txt", sep = ""), sep = "\t")
+      df.list[[i+2]] = read.csv(paste("./", data_name, ".pvalue/dcy", toString(i),".tide-search.decoy.txt", sep = ""), sep = "\t", stringsAsFactors = F)
     }
     return(df.list) 
   }
@@ -217,7 +212,7 @@ alpha_range = as.double(fdr_threshold)
 res_index = multidecoy_comp(tar_scores, dec_scores, alpha_range)[[1]]
 res_peps = pep_scores[[1]][res_index,]$sequence
 
-write(res_peps, output_file)
+write(as.character(res_peps), output_file)
 
 if(keep_psms == "F")
 {
